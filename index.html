@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpotMyGame — Get Discovered</title>
+<style>
+  :root{
+    --page:#f9f9f7;
+    --surface:#ffffff;
+    --surface-2:#fcfcfb;
+    --ink:#0b0b0b;
+    --ink-2:#52514e;
+    --muted:#898781;
+    --border:rgba(11,11,11,0.10);
+    --gridline:#e1e0d9;
+    --accent:#eb6834;      /* orange — energy / spotlight */
+    --accent-dark:#c8551f;
+    --blue:#2a78d6;        /* secondary / links */
+    --good:#0ca30c;
+    --good-text:#006300;
+    --warn-bg:#fff4ea;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background:var(--page);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--blue);}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+  /* Prototype banner */
+  .proto-banner{
+    background:var(--ink);
+    color:#fff;
+    text-align:center;
+    font-size:13px;
+    padding:8px 16px;
+  }
+  .proto-banner strong{color:var(--accent);}
+
+  /* Nav */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(249,249,247,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{
+    max-width:1080px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .logo{
+    font-weight:800;font-size:19px;letter-spacing:-0.02em;
+    display:flex;align-items:center;gap:8px;cursor:pointer;
+    background:none;border:none;color:var(--ink);
+  }
+  .logo .dot{color:var(--accent);}
+  .navlinks{display:flex;gap:4px;flex-wrap:wrap;}
+  .navlinks button{
+    background:none;border:none;font:inherit;font-size:14px;font-weight:600;
+    color:var(--ink-2);padding:8px 12px;border-radius:8px;cursor:pointer;
+  }
+  .navlinks button:hover{background:var(--border);color:var(--ink);}
+  .navlinks button.active{color:var(--ink);background:#eee;}
+  .cta-btn{
+    background:var(--accent);color:#fff;border:none;padding:10px 18px;
+    border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;
+  }
+  .cta-btn:hover{background:var(--accent-dark);}
+  .cta-btn.secondary{
+    background:transparent;color:var(--ink);border:1.5px solid var(--border);
+  }
+  .cta-btn.secondary:hover{border-color:var(--ink);}
+  .cta-btn.ghost{background:none;color:var(--blue);padding:10px 4px;}
+
+  main{max-width:1080px;margin:0 auto;padding:40px 24px 80px;}
+  .page{display:none;}
+  .page.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  /* Hero */
+  .hero{padding:56px 0 24px;text-align:left;}
+  .hero h1{
+    font-size:44px;line-height:1.1;letter-spacing:-0.02em;margin:0 0 16px;
+    max-width:640px;
+  }
+  .hero h1 .accent{color:var(--accent);}
+  .hero p.lead{font-size:18px;color:var(--ink-2);max-width:520px;margin:0 0 28px;}
+  .hero .actions{display:flex;gap:12px;flex-wrap:wrap;}
+
+  .feature-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;margin:48px 0;
+  }
+  .feature-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:22px;
+  }
+  .feature-card .emoji{font-size:26px;margin-bottom:10px;display:block;}
+  .feature-card h3{margin:0 0 6px;font-size:16px;}
+  .feature-card p{margin:0;font-size:14px;color:var(--ink-2);}
+
+  .steps-strip{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;margin:16px 0 8px;
+  }
+  .step{
+    border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:var(--surface-2);
+    position:relative;
+  }
+  .step .num{
+    width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-bottom:12px;
+  }
+  .step h4{margin:0 0 6px;font-size:15px;}
+  .step p{margin:0;font-size:13.5px;color:var(--ink-2);}
+
+  h2.section-title{font-size:28px;letter-spacing:-0.01em;margin:0 0 8px;}
+  p.section-sub{color:var(--ink-2);font-size:15px;margin:0 0 32px;max-width:600px;}
+
+  /* Cards / forms */
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:28px;
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:640px){.grid-2{grid-template-columns:1fr;} .hero h1{font-size:32px;}}
+  label{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px;}
+  input[type=text],input[type=email],input[type=date],select,textarea{
+    width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:9px;
+    font:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:1px;}
+  .field{margin-bottom:16px;}
+  .checkbox-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
+  .checkbox-row input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
+  .checkbox-row label{font-size:13.5px;font-weight:400;color:var(--ink);margin:0;}
+  .checkbox-row .hint{display:block;font-size:12px;color:var(--muted);margin-top:2px;}
+  .divider{height:1px;background:var(--gridline);margin:22px 0;}
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;background:var(--warn-bg);color:var(--accent-dark);
+    font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;
+  }
+  .badge.consent{background:#eef6ff;color:var(--blue);}
+  .success-box{
+    background:#f0faf0;border:1px solid #cfe9cf;border-radius:var(--radius);padding:20px;
+    color:var(--good-text);font-size:14px;
+  }
+  .success-box strong{display:block;font-size:16px;margin-bottom:4px;}
+  .note{font-size:12.5px;color:var(--muted);margin-top:6px;}
+
+  /* Sign up */
+  #consentPanel{display:none;margin-top:8px;}
+  #consentPanel.minor{background:var(--warn-bg);border:1px solid #f2d7c2;border-radius:var(--radius);padding:20px;}
+  #consentPanel.adult{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+  #ageNotice{font-size:13px;margin:10px 0 0;color:var(--ink-2);}
+
+  /* Coach search */
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+  .filters select{width:auto;min-width:140px;}
+  .athlete-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+  .athlete-card{
+    border:1px solid var(--border);border-radius:var(--radius);padding:16px;background:var(--surface);cursor:pointer;
+  }
+  .athlete-card:hover{border-color:var(--ink);}
+  .athlete-card .top{display:flex;justify-content:space-between;align-items:flex-start;}
+  .athlete-card .avatar{font-size:28px;}
+  .athlete-card h4{margin:10px 0 2px;font-size:15px;}
+  .athlete-card .meta{font-size:12.5px;color:var(--ink-2);margin:0 0 8px;}
+  .athlete-card .stats{font-size:12px;color:var(--muted);}
+
+  #profilePreview{margin-top:28px;}
+  .profile-header{display:flex;gap:18px;align-items:center;margin-bottom:20px;}
+  .profile-header .avatar-lg{
+    width:64px;height:64px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;font-size:30px;
+  }
+  .video-placeholder{
+    background:var(--ink);color:#fff;border-radius:12px;aspect-ratio:16/9;
+    display:flex;align-items:center;justify-content:center;font-size:15px;color:#ccc;margin-bottom:18px;
+  }
+  .video-placeholder .play{font-size:36px;margin-right:10px;}
+  table.stats-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  table.stats-table th,table.stats-table td{
+    text-align:left;padding:9px 10px;border-bottom:1px solid var(--gridline);
+  }
+  table.stats-table th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+
+  .spotlight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+  .spotlight-card{
+    border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:var(--surface);
+  }
+  .spotlight-card .week{font-size:12px;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.04em;}
+  .spotlight-card h4{margin:8px 0 4px;font-size:17px;}
+  .spotlight-card p{margin:0;font-size:13.5px;color:var(--ink-2);}
+
+  footer{
+    border-top:1px solid var(--border);margin-top:60px;padding:32px 0;
+  }
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted);}
+  footer .legal-note{max-width:640px;font-size:12.5px;color:var(--ink-2);margin-bottom:14px;line-height:1.6;}
+  footer a{color:var(--ink-2);margin-right:14px;}
+</style>
+</head>
+<body>
+
+<div class="proto-banner">🚧 <strong>Interactive prototype</strong> — no real accounts, videos, or personal data are collected or stored. Everything on this page resets on refresh.</div>
+
+<header class="site">
+  <nav>
+    <button class="logo" onclick="go('home')">Spot<span class="dot">My</span>Game</button>
+    <div class="navlinks">
+      <button data-nav="home" onclick="go('home')">Home</button>
+      <button data-nav="how" onclick="go('how')">How It Works</button>
+      <button data-nav="coverage" onclick="go('coverage')">Get Filmed</button>
+      <button data-nav="athletes" onclick="go('athletes')">For Athletes</button>
+      <button data-nav="coaches" onclick="go('coaches')">For Coaches</button>
+      <button data-nav="scout" onclick="go('scout')">Scout Talent</button>
+      <button data-nav="awards" onclick="go('awards')">Awards</button>
+    </div>
+    <button class="cta-btn" onclick="go('signup')">Sign Up Free</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section id="home" class="page">
+    <div class="hero">
+      <h1>We show up. We film you.<br>We edit it <span class="accent">free</span>.<br>You get discovered.</h1>
+      <p class="lead">SpotMyGame sends a real media team to your games, films your best plays, and hands you a pro-edited highlight reel — free. Claim it with a free account and put it in front of coaches and scouts.</p>
+      <div class="actions">
+        <button class="cta-btn" onclick="go('signup')">Create Free Account</button>
+        <button class="cta-btn secondary" onclick="go('scout')">Scout Talent</button>
+        <button class="cta-btn secondary" onclick="go('coverage')">Request Coverage</button>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="emoji">🎥</span>
+        <h3>Free video editing</h3>
+        <p>Our media team cuts a professional highlight reel from your game footage — a service other platforms charge $250+ for.</p>
+      </div>
+      <div class="feature-card">
+        <span class="emoji">📣</span>
+        <h3>Free promo</h3>
+        <p>Standout plays get shared on SpotMyGame's own channels, putting your name in front of a growing audience.</p>
+      </div>
+      <div class="feature-card">
+        <span class="emoji">🏆</span>
+        <h3>Awards & recognition</h3>
+        <p>Great performances earn spotlight features like Player of the Week — real recognition, not just a stat line.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title" style="margin-top:56px;">How it works</h2>
+    <div class="steps-strip">
+      <div class="step"><div class="num">1</div><h4>We film your game</h4><p>Request coverage or get spotted by our media team at a local game.</p></div>
+      <div class="step"><div class="num">2</div><h4>We edit it free</h4><p>Your best plays become a professionally edited highlight reel.</p></div>
+      <div class="step"><div class="num">3</div><h4>You claim your profile</h4><p>Create a free account to attach your reel, stats, and academics.</p></div>
+      <div class="step"><div class="num">4</div><h4>Coaches discover you</h4><p>Verified coaches & scouts search profiles by sport, position, and grad year.</p></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="page">
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">From game day to getting discovered — here's the full loop.</p>
+    <div class="steps-strip">
+      <div class="step"><div class="num">1</div><h4>Request or get spotted</h4><p>Submit a game through "Get Filmed," or our media team finds you covering a local game already.</p></div>
+      <div class="step"><div class="num">2</div><h4>Game day filming</h4><p>Our crew captures your top plays — no cost, no equipment needed from you.</p></div>
+      <div class="step"><div class="num">3</div><h4>Free professional edit</h4><p>We cut a highlight reel with your best moments, ready to share.</p></div>
+      <div class="step"><div class="num">4</div><h4>Claim your free profile</h4><p>Create an account to attach the reel to your stats, academics, and bio.</p></div>
+      <div class="step"><div class="num">5</div><h4>Earn recognition</h4><p>Standout performances are eligible for Player of the Week and other spotlight awards.</p></div>
+      <div class="step"><div class="num">6</div><h4>Get discovered</h4><p>Verified coaches and scouts search and reach out directly through your profile.</p></div>
+    </div>
+  </section>
+
+  <!-- GET FILMED / REQUEST COVERAGE -->
+  <section id="coverage" class="page">
+    <h2 class="section-title">Request Coverage</h2>
+    <p class="section-sub">Tell us about an upcoming game and we'll do our best to send the media team. Free — no obligation to sign up.</p>
+    <div class="card">
+      <form id="coverageForm" onsubmit="submitCoverage(event)">
+        <div class="grid-2">
+          <div class="field"><label>Your name (athlete or parent/coach)</label><input type="text" required></div>
+          <div class="field"><label>Contact email</label><input type="email" required></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Sport</label>
+            <select required>
+              <option value="">Select…</option>
+              <option>Basketball</option><option>Football</option>
+            </select>
+          </div>
+          <div class="field"><label>Athlete's age</label><input type="text" placeholder="e.g. 12" required></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Team / school</label><input type="text" required></div>
+          <div class="field"><label>Region</label><input type="text" placeholder="City, State" required></div>
+        </div>
+        <div class="field"><label>Game date & location</label><input type="text" placeholder="e.g. Sat Sept 12, Lincoln High gym" required></div>
+        <div class="field"><label>Anything else we should know?</label><textarea rows="3"></textarea></div>
+        <button type="submit" class="cta-btn">Submit Request</button>
+      </form>
+      <div id="coverageSuccess" style="display:none;margin-top:20px;" class="success-box">
+        <strong>Request received (demo)</strong>
+        This is a prototype — nothing was actually sent. In production, this would notify our scheduling team and, if the athlete is under 13, trigger our parental-consent flow before any filming happens.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR ATHLETES -->
+  <section id="athletes" class="page">
+    <h2 class="section-title">For Athletes</h2>
+    <p class="section-sub">Your highlight reel, stats, and academics — one free profile coaches can actually find.</p>
+    <div class="feature-grid">
+      <div class="feature-card"><span class="emoji">🎬</span><h3>Pro-edited highlights</h3><p>No shaky phone footage — a reel our media team edits for free.</p></div>
+      <div class="feature-card"><span class="emoji">📊</span><h3>Stats & academics</h3><p>Keep your performance stats and GPA/eligibility info in one trusted place.</p></div>
+      <div class="feature-card"><span class="emoji">🔗</span><h3>One shareable link</h3><p>Send your whole profile to a coach in one text or email.</p></div>
+      <div class="feature-card"><span class="emoji">🎯</span><h3>Target school tracker</h3><p>Track who you've reached out to and follow up at the right time.</p></div>
+    </div>
+    <button class="cta-btn" style="margin-top:8px;" onclick="go('signup')">Create Your Free Profile</button>
+  </section>
+
+  <!-- FOR COACHES -->
+  <section id="coaches" class="page">
+    <h2 class="section-title">For Coaches & Scouts</h2>
+    <p class="section-sub">Verified profiles with pro-edited film, not just self-uploaded clips — searchable by anyone using Scout Talent.</p>
+    <div class="feature-grid">
+      <div class="feature-card"><span class="emoji">🎬</span><h3>Pro-edited film</h3><p>Every profile can include a highlight reel our media team actually cut, not shaky sideline video.</p></div>
+      <div class="feature-card"><span class="emoji">📍</span><h3>Filter by location</h3><p>Narrow down by state, city, or school to find talent in the area you're recruiting.</p></div>
+      <div class="feature-card"><span class="emoji">✅</span><h3>Academics included</h3><p>See GPA and eligibility info alongside stats — no separate lookup needed.</p></div>
+      <div class="feature-card"><span class="emoji">🔎</span><h3>Open access</h3><p>No account required to browse — Scout Talent is open to coaches, scouts, media, and fans alike.</p></div>
+    </div>
+    <button class="cta-btn" style="margin-top:8px;" onclick="go('scout')">Start Scouting</button>
+  </section>
+
+  <!-- SCOUT TALENT -->
+  <section id="scout" class="page">
+    <h2 class="section-title">Scout Talent</h2>
+    <p class="section-sub">Browse athlete profiles by state, city, school, sport, and grad year. Open to anyone — no account needed.</p>
+
+    <div class="filters">
+      <select id="sState" onchange="onStateChange()"><option value="">All States</option></select>
+      <select id="sCity" onchange="renderScout()"><option value="">All Cities</option></select>
+      <select id="sSchool" onchange="renderScout()"><option value="">All Schools</option></select>
+      <select id="sSport" onchange="renderScout()"><option value="">All Sports</option></select>
+      <select id="sGradYear" onchange="renderScout()"><option value="">All Grad Years</option></select>
+    </div>
+
+    <div id="scoutGrid" class="athlete-grid"></div>
+
+    <div id="scoutProfilePreview"></div>
+  </section>
+
+  <!-- AWARDS -->
+  <section id="awards" class="page">
+    <h2 class="section-title">Awards & Spotlight</h2>
+    <p class="section-sub">Recognition for standout performances, updated as our media team covers more games.</p>
+    <div class="spotlight-grid">
+      <div class="spotlight-card">
+        <div class="week">Player of the Week · Week 1</div>
+        <h4>🏈 Sofia Ramirez</h4>
+        <p>3 interceptions and a game-sealing pick-six for Eastwood High. Reel edited and posted within 48 hours of kickoff.</p>
+      </div>
+      <div class="spotlight-card">
+        <div class="week">Player of the Week · Week 3</div>
+        <h4>🏀 Jordan Mitchell</h4>
+        <p>28 points and 9 assists in a double-overtime win — highest single-game scoring output of the season so far.</p>
+      </div>
+      <div class="spotlight-card">
+        <div class="week">Player of the Week · Week 5</div>
+        <h4>🏈 Deshawn Carter</h4>
+        <p>3 receiving touchdowns on 8 catches, including a 61-yard game winner with 12 seconds left.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGN UP -->
+  <section id="signup" class="page">
+    <h2 class="section-title">Create Your Free Account</h2>
+    <p class="section-sub">Built with COPPA in mind: athletes under 13 require a parent or guardian's verified consent — collected separately from consent to use content in our promotion.</p>
+
+    <div class="card">
+      <form id="signupForm" onsubmit="return false;">
+        <div class="grid-2">
+          <div class="field"><label>Athlete full name</label><input type="text" id="suName" required></div>
+          <div class="field"><label>Sport</label>
+            <select id="suSport" required>
+              <option value="">Select…</option><option>Basketball</option><option>Football</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Email</label><input type="email" id="suEmail" required></div>
+          <div class="field"><label>Date of birth</label><input type="date" id="suDob" required onchange="checkAge()"></div>
+        </div>
+
+        <p id="ageNotice"></p>
+
+        <!-- Minor consent panel -->
+        <div id="minorPanel" class="minor" style="display:none;">
+          <span class="badge consent">Parent / Guardian Consent Required</span>
+          <p style="font-size:13.5px;color:var(--ink-2);margin:10px 0 16px;">
+            Because this athlete is under 13, U.S. law (COPPA) requires verifiable consent from a parent or legal guardian before we collect any information or create an account.
+          </p>
+          <div class="grid-2">
+            <div class="field"><label>Parent / guardian name</label><input type="text" id="parentName"></div>
+            <div class="field"><label>Parent / guardian email</label><input type="email" id="parentEmail"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="consentGuardian">
+            <label for="consentGuardian">I am the parent or legal guardian of the athlete named above, and I am at least 18 years old.</label>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="consentCollect">
+            <label for="consentCollect">I consent to SpotMyGame collecting my child's profile information (name, sport, stats, academic info) and creating an account, per the Privacy Policy. <span class="hint">Required to create a profile.</span></label>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="consentPromo">
+            <label for="consentPromo">I separately consent to SpotMyGame's media team using photos/video of my child for (a) their public athlete profile and (b) SpotMyGame's own promotional/social media content. <span class="hint">Optional — declining still allows a private profile with the reel visible only to verified coaches.</span></label>
+          </div>
+        </div>
+
+        <!-- 13+ consent panel -->
+        <div id="adultPanel" class="adult" style="display:none;">
+          <div class="checkbox-row">
+            <input type="checkbox" id="teenTerms">
+            <label for="teenTerms">I agree to the Terms of Service and Privacy Policy.</label>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="teenPromo">
+            <label for="teenPromo">I consent to SpotMyGame using my photos/video for promotional and social media content. <span class="hint">Optional — you can still have a profile without this.</span></label>
+          </div>
+        </div>
+
+        <button type="button" class="cta-btn" style="margin-top:18px;" onclick="createAccount()">Create Account</button>
+      </form>
+
+      <div id="signupSuccess" style="display:none;margin-top:20px;" class="success-box"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap" style="flex-direction:column;">
+    <p class="legal-note">
+      <strong>Prototype notice:</strong> SpotMyGame is a product concept demo. It does not collect, store, or transmit real personal data — all "accounts," search results, and requests on this page exist only in your browser session. A production build would implement verifiable parental consent for athletes under 13 (per COPPA), separate consent for promotional use vs. data collection, a published data-retention policy, and written media-release consent for all filmed content, as required by federal and state law.
+    </p>
+    <div style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:10px;">
+      <div><a href="#" onclick="return false;">Privacy Policy</a><a href="#" onclick="return false;">Terms</a><a href="#" onclick="return false;">Contact</a></div>
+      <div id="copyright"></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---------- Nav / routing ----------
+  const pages = ['home','how','coverage','athletes','coaches','scout','awards','signup'];
+  function go(id){
+    pages.forEach(p=>{
+      document.getElementById(p).classList.toggle('active', p===id);
+    });
+    document.querySelectorAll('.navlinks button').forEach(b=>{
+      b.classList.toggle('active', b.dataset.nav===id);
+    });
+    window.location.hash = id;
+    window.scrollTo({top:0,behavior:'instant' in window ? 'instant':'auto'});
+    if(id==='scout' && !document.getElementById('scoutGrid').dataset.rendered){
+      renderScout();
+    }
+  }
+  window.addEventListener('hashchange', ()=>{
+    const id = window.location.hash.replace('#','');
+    if(pages.includes(id)) go(id);
+  });
+  document.getElementById('copyright').textContent = '© ' + new Date().getFullYear() + ' SpotMyGame (demo)';
+
+  // ---------- Request coverage ----------
+  function submitCoverage(e){
+    e.preventDefault();
+    document.getElementById('coverageForm').style.display='none';
+    document.getElementById('coverageSuccess').style.display='block';
+  }
+
+  // ---------- Sample athlete data ----------
+  const athletes = [
+    {name:'Jordan Mitchell', sport:'Basketball', position:'Guard', grad:'2027', school:'Lincoln High', city:'Dallas', state:'TX', stats:[['PPG','14.2'],['APG','4.1'],['GPA','3.8']], award:'Player of the Week · Wk 3', avatar:'🏀'},
+    {name:'Amara Ross', sport:'Basketball', position:'Forward', grad:'2026', school:'Westview Academy', city:'Atlanta', state:'GA', stats:[['PPG','11.5'],['RPG','8.2'],['GPA','3.6']], award:null, avatar:'🏀'},
+    {name:'Deshawn Carter', sport:'Football', position:'WR', grad:'2027', school:'Central High', city:'Houston', state:'TX', stats:[['REC','42'],['YDS','780'],['GPA','3.4']], award:'Player of the Week · Wk 5', avatar:'🏈'},
+    {name:'Maya Chen', sport:'Football', position:'K', grad:'2028', school:'Northside High', city:'Phoenix', state:'AZ', stats:[['FG','14/16'],['LONG','47'],['GPA','3.9']], award:null, avatar:'🏈'},
+    {name:'Tyler Brooks', sport:'Basketball', position:'Point Guard', grad:'2029', school:'Riverside Middle', city:'Denver', state:'CO', stats:[['PPG','9.8'],['APG','5.5'],['GPA','3.5']], award:null, avatar:'🏀'},
+    {name:'Sofia Ramirez', sport:'Football', position:'DB', grad:'2026', school:'Eastwood High', city:'Miami', state:'FL', stats:[['INT','5'],['TKL','60'],['GPA','3.7']], award:'Player of the Week · Wk 1', avatar:'🏈'},
+    {name:'Marcus Lee', sport:'Basketball', position:'Center', grad:'2027', school:'Skyline High', city:'Dallas', state:'TX', stats:[['PPG','8.5'],['RPG','10.2'],['GPA','3.3']], award:null, avatar:'🏀'},
+    {name:'Ava Thompson', sport:'Football', position:'QB', grad:'2028', school:'Central High', city:'Houston', state:'TX', stats:[['YDS','1450'],['TD','16'],['GPA','3.6']], award:null, avatar:'🏈'},
+  ];
+
+  function uniqueSorted(key, subset){
+    return [...new Set((subset||athletes).map(a=>a[key]))].sort();
+  }
+
+  function populateSelect(id, values, placeholder){
+    const sel = document.getElementById(id);
+    const current = sel.value;
+    sel.innerHTML = `<option value="">${placeholder}</option>` + values.map(v=>`<option ${v===current?'selected':''}>${v}</option>`).join('');
+  }
+
+  function populateScoutFilters(){
+    populateSelect('sState', uniqueSorted('state'), 'All States');
+    populateSelect('sCity', uniqueSorted('city'), 'All Cities');
+    populateSelect('sSchool', uniqueSorted('school'), 'All Schools');
+    populateSelect('sSport', uniqueSorted('sport'), 'All Sports');
+    populateSelect('sGradYear', uniqueSorted('grad'), 'All Grad Years');
+  }
+
+  function onStateChange(){
+    const state = document.getElementById('sState').value;
+    const subset = state ? athletes.filter(a=>a.state===state) : athletes;
+    populateSelect('sCity', uniqueSorted('city', subset), 'All Cities');
+    populateSelect('sSchool', uniqueSorted('school', subset), 'All Schools');
+    renderScout();
+  }
+
+  function renderScout(){
+    const state = document.getElementById('sState').value;
+    const city = document.getElementById('sCity').value;
+    const school = document.getElementById('sSchool').value;
+    const sport = document.getElementById('sSport').value;
+    const grad = document.getElementById('sGradYear').value;
+    const filtered = athletes.filter(a =>
+      (!state || a.state===state) && (!city || a.city===city) && (!school || a.school===school) &&
+      (!sport || a.sport===sport) && (!grad || a.grad===grad)
+    );
+    const grid = document.getElementById('scoutGrid');
+    grid.dataset.rendered = '1';
+    grid.innerHTML = filtered.length ? filtered.map((a)=>`
+      <div class="athlete-card" onclick="showScoutProfile(${athletes.indexOf(a)})">
+        <div class="top"><span class="avatar">${a.avatar}</span>${a.award?'<span class="badge">🏆 Award</span>':''}</div>
+        <h4>${a.name}</h4>
+        <div class="meta">${a.sport} · ${a.position} · Class of ${a.grad}</div>
+        <div class="meta">${a.school}, ${a.city}, ${a.state}</div>
+        <div class="stats">${a.stats.map(s=>s[0]+': '+s[1]).join('  ·  ')}</div>
+      </div>
+    `).join('') : '<p style="color:var(--muted);">No athletes match those filters yet.</p>';
+  }
+
+  function showScoutProfile(i){
+    const a = athletes[i];
+    document.getElementById('scoutProfilePreview').innerHTML = `
+      <div class="card">
+        <div class="profile-header">
+          <div class="avatar-lg">${a.avatar}</div>
+          <div>
+            <h3 style="margin:0 0 2px;">${a.name} ${a.award?`<span class="badge">🏆 ${a.award}</span>`:''}</h3>
+            <div style="color:var(--ink-2);font-size:13.5px;">${a.sport} · ${a.position} · Class of ${a.grad} · ${a.school}, ${a.city}, ${a.state}</div>
+          </div>
+        </div>
+        <div class="video-placeholder"><span class="play">▶</span> Highlight reel (demo placeholder)</div>
+        <table class="stats-table">
+          <tr><th>Stat</th><th>Value</th></tr>
+          ${a.stats.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}
+        </table>
+      </div>
+    `;
+    document.getElementById('scoutProfilePreview').scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  // ---------- Sign up / age-gated consent ----------
+  function checkAge(){
+    const dob = document.getElementById('suDob').value;
+    const minorPanel = document.getElementById('minorPanel');
+    const adultPanel = document.getElementById('adultPanel');
+    const notice = document.getElementById('ageNotice');
+    if(!dob){ minorPanel.style.display='none'; adultPanel.style.display='none'; notice.textContent=''; return; }
+
+    const today = new Date();
+    const birth = new Date(dob);
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if(m < 0 || (m===0 && today.getDate() < birth.getDate())) age--;
+
+    if(age < 13){
+      notice.innerHTML = `Age detected: <strong>${age}</strong>. Parent/guardian consent required below.`;
+      minorPanel.style.display='block';
+      adultPanel.style.display='none';
+    } else {
+      notice.innerHTML = `Age detected: <strong>${age}</strong>.`;
+      minorPanel.style.display='none';
+      adultPanel.style.display='block';
+    }
+  }
+
+  function createAccount(){
+    const name = document.getElementById('suName').value;
+    const sport = document.getElementById('suSport').value;
+    const email = document.getElementById('suEmail').value;
+    const dob = document.getElementById('suDob').value;
+    if(!name || !sport || !email || !dob){
+      alert('Please fill in all fields, including date of birth, first.');
+      return;
+    }
+    const today = new Date(); const birth = new Date(dob);
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if(m < 0 || (m===0 && today.getDate() < birth.getDate())) age--;
+
+    const successBox = document.getElementById('signupSuccess');
+
+    if(age < 13){
+      const guardian = document.getElementById('consentGuardian').checked;
+      const collect = document.getElementById('consentCollect').checked;
+      const promo = document.getElementById('consentPromo').checked;
+      const parentName = document.getElementById('parentName').value;
+      const parentEmail = document.getElementById('parentEmail').value;
+      if(!parentName || !parentEmail || !guardian || !collect){
+        alert('Parent/guardian name, email, and the two required consent checkboxes must be completed for athletes under 13.');
+        return;
+      }
+      successBox.innerHTML = `<strong>Account created (demo) — welcome, ${name}!</strong>
+        Verified by parent/guardian ${parentName}. Data collection consent: ✅.
+        Promotional use consent: ${promo ? '✅ granted' : '❌ declined — profile stays private to verified coaches only'}.
+        <br><br>In production, "verifiable consent" would use a stronger method (e.g. ID verification or a signed form) rather than a checkbox, per COPPA.`;
+    } else {
+      const terms = document.getElementById('teenTerms').checked;
+      const promo = document.getElementById('teenPromo').checked;
+      if(!terms){
+        alert('Please agree to the Terms of Service and Privacy Policy.');
+        return;
+      }
+      successBox.innerHTML = `<strong>Account created (demo) — welcome, ${name}!</strong>
+        Sport: ${sport}. Promotional use consent: ${promo ? '✅ granted' : '❌ declined — profile stays private to verified coaches only'}.`;
+    }
+    document.getElementById('signupForm').style.display='none';
+    successBox.style.display='block';
+  }
+
+  // ---------- Init ----------
+  (function init(){
+    populateScoutFilters();
+    const id = window.location.hash.replace('#','');
+    go(pages.includes(id) ? id : 'home');
+  })();
+</script>
+
+</body>
+</html>
